@@ -15,3 +15,15 @@ venv/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Ignore datasets and models
+*.csv
+*.xlsx
+
+# Ignore images / outputs
+*.png
+*.jpeg
+*.jpg
+
+# Ignore trained models
+*.pkl
