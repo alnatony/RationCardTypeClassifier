@@ -40,7 +40,6 @@ src/
 ├── models/     # Model training code
 ├── ocr/        # OCR extraction
 └── tests/      # Testing scripts (NPI case)
-
 ```
 
 ---
@@ -51,21 +50,18 @@ src/
 
 ```
 pip install -r requirements.txt
-
 ```
 
 2. Train the model  
 
 ```
 python src/models/train_model.py
-
 ```
 
 3. Run the application  
 
 ```
 python src/app/app1.py
-
 ```
 
 ---
