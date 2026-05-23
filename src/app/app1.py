@@ -8,7 +8,7 @@ import re
 import tempfile
 import os
 
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+#pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 model     = joblib.load("src/models/ration_model.pkl")
 le        = joblib.load("src/models/label_encoder.pkl")
