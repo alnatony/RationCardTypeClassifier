@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: ration-card-classifier
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run src/app/app1.py --server.port $PORT --server.address 0.0.0.0
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
+    aptPackages:
+      - tesseract-ocr
