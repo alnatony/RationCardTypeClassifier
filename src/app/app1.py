@@ -10,9 +10,9 @@ import os
 
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
-model     = joblib.load("models/ration_model.pkl")
-le        = joblib.load("models/label_encoder.pkl")
-feat_cols = joblib.load("models/feature_columns.pkl")
+model     = joblib.load("src/models/ration_model.pkl")
+le        = joblib.load("src/models/label_encoder.pkl")
+feat_cols = joblib.load("src/models/feature_columns.pkl")
 
 st.set_page_config(page_title="റേഷൻ കാർഡ് വർഗ്ഗീകരണം", page_icon="🪪", layout="centered")
 
