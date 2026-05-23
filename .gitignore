@@ -1,5 +1,5 @@
 # Model files
-*.pkl
+
 
 # Data files
 *.csv
@@ -26,4 +26,3 @@ Thumbs.db
 *.jpg
 
 # Ignore trained models
-*.pkl
