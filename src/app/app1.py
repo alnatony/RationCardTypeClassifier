@@ -42,7 +42,14 @@ if uploaded_file:
         gray = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
         text = pytesseract.image_to_string(gray, lang="eng")
         os.unlink(tmp_path)
-        for pattern in [r'[₹%Rs\.]+\s*\.?\s*([0-9,]+)', r'[Ii]ncome[^0-9]*([0-9,]+)', r'[Aa]nnual[^0-9]*([0-9,]+)', r'([0-9]{5,7})']:
+        for pattern in [
+    r'[₹%RsZz\u20B9tT]+\s*\.?\s*([0-9,]+)',       # handles misread ₹ symbol
+    r'(?:Rs|RS|rs)\.?\s*([0-9,]+)',                  # Rs. 42000
+    r'\b([0-9]{4,7})\s*\(Rupees',                    # 42000 (Rupees...)
+    r'[Ii]ncome[^0-9]*([0-9,]+)',
+    r'[Aa]nnual[^0-9]*([0-9,]+)',
+    r'([0-9]{5,7})'
+]:
             for match in re.findall(pattern, text):
                 raw = match.replace(",","").strip()
                 try:
