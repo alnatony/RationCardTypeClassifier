@@ -41,6 +41,7 @@ if uploaded_file:
         gray = cv2.resize(gray, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC)
         gray = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
         text = pytesseract.image_to_string(gray, lang="eng")
+        st.text(text)  # temporarily show raw OCR output
         os.unlink(tmp_path)
         for pattern in [
     r'[₹%RsZz\u20B9tT]+\s*\.?\s*([0-9,]+)',       # handles misread ₹ symbol
