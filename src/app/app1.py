@@ -10,8 +10,12 @@ import os
 
 import pytesseract
 
-pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
-#pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+import os
+# Works on both Windows and Linux
+if os.name == 'nt':  # Windows
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+else:  # Linux (Render)
+    pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 
 model     = joblib.load("src/models/ration_model.pkl")
 le        = joblib.load("src/models/label_encoder.pkl")
@@ -37,20 +41,29 @@ if uploaded_file:
             tmp.write(uploaded_file.read())
             tmp_path = tmp.name
         img = cv2.imread(tmp_path)
+
+        # Step 1 - Scale up a lot
+        img = cv2.resize(img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+
+        # Step 2 - Grayscale
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        gray = cv2.resize(gray, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC)
+
+        # Step 3 - Sharpen the image
+        kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+        gray = cv2.filter2D(gray, -1, kernel)
+
+        # Step 4 - Denoise
+        gray = cv2.fastNlMeansDenoising(gray, h=30)
+
+        # Step 5 - Threshold
         gray = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-        text = pytesseract.image_to_string(gray, lang="eng")
+
+        # Step 6 - OCR with page segmentation mode 4 (single column)
+        custom_config = r'--oem 3 --psm 4'
+        text = pytesseract.image_to_string(gray, lang="eng", config=custom_config)
         st.text(text)  # temporarily show raw OCR output
         os.unlink(tmp_path)
-        for pattern in [
-    r'[₹%RsZz\u20B9tT]+\s*\.?\s*([0-9,]+)',       # handles misread ₹ symbol
-    r'(?:Rs|RS|rs)\.?\s*([0-9,]+)',                  # Rs. 42000
-    r'\b([0-9]{4,7})\s*\(Rupees',                    # 42000 (Rupees...)
-    r'[Ii]ncome[^0-9]*([0-9,]+)',
-    r'[Aa]nnual[^0-9]*([0-9,]+)',
-    r'([0-9]{5,7})'
-]:
+        for pattern in [r'[₹%RsZz\u20B9tT]+\s*\.?\s*([0-9,]+)',r'(?:Rs|RS|rs)\.?\s*([0-9,]+)',r'\b([0-9]{4,7})\s*\(Rupees',r'[Ii]ncome[^0-9]*([0-9,]+)',r'[Aa]nnual[^0-9]*([0-9,]+)',r'([0-9]{5,7})']:
             for match in re.findall(pattern, text):
                 raw = match.replace(",","").strip()
                 try:
