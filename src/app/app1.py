@@ -43,7 +43,7 @@ if uploaded_file:
         img = cv2.imread(tmp_path)
 
         # Step 1 - Scale up a lot
-        img = cv2.resize(img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+        img = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
 
         # Step 2 - Grayscale
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -61,7 +61,7 @@ if uploaded_file:
         # Step 6 - OCR with page segmentation mode 4 (single column)
         custom_config = r'--oem 3 --psm 4'
         text = pytesseract.image_to_string(gray, lang="eng", config=custom_config)
-        st.text(text)  # temporarily show raw OCR output
+        
         os.unlink(tmp_path)
         for pattern in [r'[₹%RsZz\u20B9tT]+\s*\.?\s*([0-9,]+)',r'(?:Rs|RS|rs)\.?\s*([0-9,]+)',r'\b([0-9]{4,7})\s*\(Rupees',r'[Ii]ncome[^0-9]*([0-9,]+)',r'[Aa]nnual[^0-9]*([0-9,]+)',r'([0-9]{5,7})']:
             for match in re.findall(pattern, text):
