@@ -78,10 +78,5 @@ The model correctly identifies **NPI (brown card)** as institutional residents w
 
 ---
 
-## Notes
-
-- Dataset and model files are excluded using `.gitignore`  
-- The model can be regenerated using the training script  
-
 ## working link 
 https://rationcardtypeclassifier.onrender.com/
